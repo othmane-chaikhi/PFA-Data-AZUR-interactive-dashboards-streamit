@@ -15,21 +15,35 @@ st.set_page_config(
 load_dotenv()
 
 def get_secret(key, default=None):
-    """Retrieve secret from environment or streamlit secrets."""
-    # 1. Try environment variables (Local .env)
+    """Retrieve secret from streamlit secrets or environment variables."""
+    # 1. Try Streamlit Secrets (Cloud Deployment) - Priority
+    try:
+        if key in st.secrets:
+            return st.secrets[key]
+        if key.lower() in st.secrets:
+            return st.secrets[key.lower()]
+    except:
+        pass
+
+    # 2. Try environment variables (Local .env)
     val = os.getenv(key)
     if val and "your-personal-access-token" not in val and "your-warehouse-id" not in val:
         return val
-    
-    # 2. Try Streamlit Secrets (Cloud Deployment)
-    if key in st.secrets:
-        return st.secrets[key]
         
     return default
 
 DATABRICKS_SERVER_HOSTNAME = get_secret("DATABRICKS_SERVER_HOSTNAME")
 DATABRICKS_HTTP_PATH = get_secret("DATABRICKS_HTTP_PATH")
 DATABRICKS_TOKEN = get_secret("DATABRICKS_TOKEN")
+
+# Debugging in production (Expandable)
+with st.sidebar.expander("🛠️ Debug Deployment (Secrets)"):
+    st.write(f"Hostname detected: {'✅' if DATABRICKS_SERVER_HOSTNAME else '❌'}")
+    st.write(f"HTTP Path detected: {'✅' if DATABRICKS_HTTP_PATH else '❌'}")
+    st.write(f"Token detected: {'✅' if DATABRICKS_TOKEN else '❌'}")
+    if not DATABRICKS_TOKEN:
+        st.info("Ensure you added the secrets in Streamlit Cloud Dashboard -> Settings -> Secrets.")
+
 
 
 def get_databricks_connection():
