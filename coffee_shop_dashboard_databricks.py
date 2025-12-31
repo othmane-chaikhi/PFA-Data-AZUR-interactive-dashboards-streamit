@@ -11,40 +11,10 @@ st.set_page_config(
     layout="wide"
 )
 
-# Load environment variables (Local)
-load_dotenv()
-
-def get_secret(key, default=None):
-    """Retrieve secret from streamlit secrets or environment variables."""
-    # 1. Try Streamlit Secrets (Cloud Deployment) - Priority
-    try:
-        if key in st.secrets:
-            return st.secrets[key]
-        if key.lower() in st.secrets:
-            return st.secrets[key.lower()]
-    except:
-        pass
-
-    # 2. Try environment variables (Local .env)
-    val = os.getenv(key)
-    if val and "your-personal-access-token" not in val and "your-warehouse-id" not in val:
-        return val
-        
-    return default
-
-DATABRICKS_SERVER_HOSTNAME = get_secret("DATABRICKS_SERVER_HOSTNAME")
-DATABRICKS_HTTP_PATH = get_secret("DATABRICKS_HTTP_PATH")
-DATABRICKS_TOKEN = get_secret("DATABRICKS_TOKEN")
-
-# Debugging in production (Expandable)
-with st.sidebar.expander("🛠️ Debug Deployment (Secrets)"):
-    st.write(f"Hostname detected: {'✅' if DATABRICKS_SERVER_HOSTNAME else '❌'}")
-    st.write(f"HTTP Path detected: {'✅' if DATABRICKS_HTTP_PATH else '❌'}")
-    st.write(f"Token detected: {'✅' if DATABRICKS_TOKEN else '❌'}")
-    if not DATABRICKS_TOKEN:
-        st.info("Ensure you added the secrets in Streamlit Cloud Dashboard -> Settings -> Secrets.")
-
-
+# Load environment variables
+DATABRICKS_SERVER_HOSTNAME = "adb-7405619795306590.10.azuredatabricks.net"
+DATABRICKS_HTTP_PATH = "/sql/1.0/warehouses/bea12c9fd152c7cd"
+DATABRICKS_TOKEN = "dapi5192ab4cb289db6a8457a722e8fda792"
 
 def get_databricks_connection():
     try:
@@ -86,7 +56,7 @@ st.title("☕ Coffee Shop Sales Analysis")
 st.markdown("---")
 
 if not DATABRICKS_TOKEN or "your-personal-access-token" in DATABRICKS_TOKEN:
-    st.warning("⚠️ **Missing Configuration**: Please add your `DATABRICKS_TOKEN` to your Secrets (Cloud) or `.env` file (Local).")
+    st.warning("⚠️ **Missing Configuration**: Please add your `DATABRICKS_TOKEN` to the `.env` file to see the data.")
     st.stop()
 
 # Sidebar for filters or info
