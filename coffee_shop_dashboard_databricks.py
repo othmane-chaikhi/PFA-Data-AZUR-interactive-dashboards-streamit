@@ -13,7 +13,7 @@ st.set_page_config(
 # Direct configuration - REMOVE BEFORE DEPLOYING TO PRODUCTION
 DATABRICKS_SERVER_HOSTNAME = "adb-7405619795306590.10.azuredatabricks.net"
 DATABRICKS_HTTP_PATH = "/sql/1.0/warehouses/bea12c9fd152c7cd"
-DATABRICKS_TOKEN = "dapi06163300c6c4a02e600241dba5f4ab9a"
+DATABRICKS_TOKEN = "dapi5192ab4cb289db6a8457a722e8fda792"
 
 # Add debug information
 st.sidebar.subheader("Connection Details")
